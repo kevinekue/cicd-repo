@@ -43,3 +43,5 @@ workflows:
           requires: [welcome/run]
       - print-world:
           requires: [print-hello]
+      - print-name
+          
