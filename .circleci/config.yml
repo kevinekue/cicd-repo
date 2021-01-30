@@ -11,6 +11,11 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - print_pipeline_id
+      - run: return 1
+      - run: 
+          name: on error
+          command: echo "There was an error at this level in this here job"
+          when: on_fail
 
 workflows:
   my_workflow:
