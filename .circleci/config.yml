@@ -1,0 +1,39 @@
+version: 2.1
+
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+
+jobs:
+  configure_infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["FINGERPRINT"] #CircleCI's Fingerprint in the settings/ssh details
+      - run:
+          name: Install Dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook main-remote.yml -i inventory
+      # - run:
+      #     name: Ensure backend infra exists
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file template.yml \
+      #         --stack-name backendStack
+
+workflows:
+  # InfraConfigWorkflow:
+  #   jobs:
+  #     - configure_infrastructure
+   welcome:
+    # Run the welcome/run job in its own container
+    jobs:
+      - welcome/run
+
+#Used to define the jobs and workflow in the pipeline
