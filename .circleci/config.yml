@@ -1,24 +1,29 @@
 version: 2.1
 
-commands:
-  print_pipeline_id:
-    steps:
-      - run: echo ${CIRCLE_WORKFLOW_ID}
-
 jobs:
-  create_infrastructure:
+  configure_infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["3c:16:b8:88:26:e1:40:6f:50:53:1d:ef:30:c4:eb:a3"]
       - run:
-          name: Ensure backend infra exists
+          name: Install Dependencies
           command: |
-            aws cloudformation deploy \
-              --template-file template.yml \
-              --stack-name backendStack
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook playbook.yml -i inventory
+      # - run:
+      #     name: Ensure backend infra exists
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file template.yml \
+      #         --stack-name backendStack
 
 workflows:
   my_workflow:
     jobs:
-      - create_infrastructure
+      - configure_infrastructure
