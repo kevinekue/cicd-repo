@@ -8,6 +8,7 @@
   become: yes
   apt:
     upgrade: yes
+#Previous line throws a syntax error in vscode, but is accurate.
 
 - name: remove dependencies that are no longer required
   become: yes

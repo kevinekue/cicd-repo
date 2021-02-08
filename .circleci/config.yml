@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+
 jobs:
   configure_infrastructure:
     docker:
@@ -7,7 +11,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["3c:16:b8:88:26:e1:40:6f:50:53:1d:ef:30:c4:eb:a3"]
+          fingerprints: ["FINGERPRINT"] #CircleCI's Fingerprint in the settings/ssh details
       - run:
           name: Install Dependencies
           command: |
@@ -24,6 +28,12 @@ jobs:
       #         --stack-name backendStack
 
 workflows:
-  my_workflow:
+  # InfraConfigWorkflow:
+  #   jobs:
+  #     - configure_infrastructure
+   welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - configure_infrastructure
+      - welcome/run
+
+#Used to define the jobs and workflow in the pipeline
